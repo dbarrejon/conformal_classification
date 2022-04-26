@@ -11,7 +11,7 @@ import torch.backends.cudnn as cudnn
 import random
 
 parser = argparse.ArgumentParser(description='Conformalize Torchvision Model on Imagenet')
-parser.add_argument('data', metavar='IMAGENETVALDIR', help='path to Imagenet Val')
+parser.add_argument('--data', metavar='IMAGENETVALDIR', help='path to Imagenet Val')
 parser.add_argument('--batch_size', metavar='BSZ', help='batch size', default=128)
 parser.add_argument('--num_workers', metavar='NW', help='number of workers', default=0)
 parser.add_argument('--num_calib', metavar='NCALIB', help='number of calibration points', default=10000)
@@ -19,6 +19,7 @@ parser.add_argument('--seed', metavar='SEED', help='random seed', default=0)
 
 if __name__ == "__main__":
     args = parser.parse_args()
+    args.data = "./imagenet_val/"
     ### Fix randomness 
     np.random.seed(seed=args.seed)
     torch.manual_seed(args.seed)
@@ -44,8 +45,8 @@ if __name__ == "__main__":
     cudnn.benchmark = True
 
     # Get the model 
-    model = torchvision.models.resnet152(pretrained=True,progress=True).cuda()
-    model = torch.nn.DataParallel(model) 
+    model = torchvision.models.resnet152(pretrained=True, progress=True)
+    # model = torch.nn.DataParallel(model)
     model.eval()
 
     # optimize for 'size' or 'adaptiveness'
